@@ -9,7 +9,6 @@
           - { name: visual-studio-code }
           - { name: bash }
           - { name: zellij }
-          - { name: git }
           - { name: zsh }
 
       homebrew_fonts:
@@ -50,5 +49,5 @@
 
       - name: Change shell to zsh
         ansible.builtin.user:
-            name: '{{ remote_regular_user }}'
+            name: '{{ current_user }}'
             shell: /usr/bin/zsh

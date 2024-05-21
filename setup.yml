@@ -5,7 +5,9 @@
       - vars/common.yml
 
   tasks:
-      # - ansible.builtin.import_tasks: tasks/node.yml
+      - ansible.builtin.import_tasks: tasks/node.yml
       - ansible.builtin.import_tasks: tasks/core.yml
   pre_tasks:
-      # - ansible.builtin.import_tasks: tasks/brew.yml
+      - name: Get my user
+        ansible.builtin.set_fact:
+            current_user: "{{ ansible_env.SUDO_USER or ansible_user_id }}"
