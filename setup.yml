@@ -1,0 +1,11 @@
+---
+- hosts: localhost
+  connection: local
+  vars_files:
+      - vars/common.yml
+
+  tasks:
+      # - ansible.builtin.import_tasks: tasks/node.yml
+      - ansible.builtin.import_tasks: tasks/core.yml
+  pre_tasks:
+      # - ansible.builtin.import_tasks: tasks/brew.yml

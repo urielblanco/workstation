@@ -1,0 +1,54 @@
+---
+- name: Install Core Packages
+
+  vars:
+      brew_exe_path: "{% if ansible_facts['architecture'] == 'arm64' %}/opt/homebrew/bin{% else %}/usr/local/bin{% endif %}"
+
+      homebrew_packages:
+          - { name: neovim }
+          - { name: visual-studio-code }
+          - { name: bash }
+          - { name: zellij }
+          - { name: git }
+          - { name: zsh }
+
+      homebrew_fonts:
+          - { name: font-fontawesome }
+          - { name: font-freefont }
+          - { name: font-meslo-lg-nerd-font }
+          - { name: font-hack-nerd-font }
+          - { name: font-jetbrains-mono }
+
+  block:
+      - name: Update Homebrew
+        community.general.homebrew:
+            path: '{{ brew_exe_path }}'
+            update_homebrew: yes
+
+      - name: Install homebrew packages
+        community.general.homebrew:
+            path: '{{ brew_exe_path }}'
+            name: '{{ item.name }}'
+            state: "{{ item.state | default('present') }}"
+        ignore_errors: true
+        with_items: '{{ homebrew_packages }}'
+        register: ret_homebrew
+
+      - name: Check updated homebrew package
+        set_fact: updated_homebrew_package={{ ret_homebrew.results | selectattr('changed') | map(attribute='item.name') | list }}
+
+      - name: Debug Updated Packages
+        debug:
+            msg: 'Updated packages: {{ updated_homebrew_package }}'
+
+      - name: Install Fonts
+        community.general.homebrew_cask:
+            path: '{{ brew_exe_path }}'
+            name: '{{ item.name }}'
+            state: "{{ item.state | default('installed') }}"
+        with_items: '{{ homebrew_fonts }}'
+
+      - name: Change shell to zsh
+        ansible.builtin.user:
+            name: '{{ remote_regular_user }}'
+            shell: /usr/bin/zsh

@@ -1,0 +1,23 @@
+---
+# Installs [HomeBrew](https://brew.sh/) prompt
+- name: Install HomeBrew
+  block:
+      - name: Check if HomeBrew is Installed
+        command: which brew
+        register: brew
+
+      - name: Show the Verification Result
+        debug:
+            msg: Homebrew is already installed
+        when: brew.rc == 0
+
+      - name: Download & Install Homebrew
+        when: brew.rc != 0
+        block:
+            - name: Download Installer Script
+              ansible.builtin.get_url:
+                  url: https://raw.githubusercontent.com/Homebrew/install/HEAD/install.sh
+                  dest: /tmp/brew_install.sh
+                  mode: '775'
+            - name: Run Installer Script
+              ansible.builtin.shell: NONINTERACTIVE=1 /tmp/brew_install.sh
