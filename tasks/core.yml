@@ -7,14 +7,19 @@
       homebrew_packages:
           - { name: neovim }
           - { name: bash }
+          - { name: nvm }
           - { name: zellij }
           - { name: zsh }
+          - { name: powerlevel10k }
           - { name: alacritty }
           - { name: anaconda }
+          - { name: cocoapods }
+          - { name: andoid-studio }
+          - { name: mas }
+          - { name: google-chrome }
           - { name: visual-studio-code }
           - { name: slack }
-          - { name: google-chrome }
-
+          - { name: spotify }
 
       homebrew_fonts:
           - { name: font-fontawesome }
@@ -55,4 +60,7 @@
       - name: Change shell to zsh
         ansible.builtin.user:
             name: '{{ current_user }}'
-            shell: /usr/bin/zsh
+            shell: /bin/zsh
+
+      - name: Load ~/.zshrc
+        shell: source ~/.zshrc
