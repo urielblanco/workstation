@@ -10,7 +10,9 @@
           - { name: zellij }
           - { name: zsh }
           - { name: alacritty }
+          - { name: anaconda }
           - { name: visual-studio-code }
+          - { name: slack }
           - { name: google-chrome }
 
 
