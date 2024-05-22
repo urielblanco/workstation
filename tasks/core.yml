@@ -6,10 +6,13 @@
 
       homebrew_packages:
           - { name: neovim }
-          - { name: visual-studio-code }
           - { name: bash }
           - { name: zellij }
           - { name: zsh }
+          - { name: alacritty }
+          - { name: visual-studio-code }
+          - { name: google-chrome }
+
 
       homebrew_fonts:
           - { name: font-fontawesome }
