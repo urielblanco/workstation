@@ -5,21 +5,22 @@
       brew_exe_path: "{% if ansible_facts['architecture'] == 'arm64' %}/opt/homebrew/bin{% else %}/usr/local/bin{% endif %}"
 
       homebrew_packages:
-          - { name: neovim }
+          - { name: helix }
           - { name: bash }
           - { name: nvm }
           - { name: zellij }
           - { name: zsh }
+          - { name: zsh-autosuggestions }
           - { name: powerlevel10k }
-          - { name: alacritty }
-          - { name: anaconda }
-          - { name: cocoapods }
-          - { name: andoid-studio }
-          - { name: mas }
-          - { name: google-chrome }
-          - { name: visual-studio-code }
-          - { name: slack }
-          - { name: spotify }
+          - { name: alacritty, cask: true }
+          - { name: anaconda, cask: true }
+          - { name: cocoapods, cask: true }
+          - { name: android-studio, cask: true }
+          - { name: google-chrome, cask: true }
+          - { name: visual-studio-code, cask: true }
+          - { name: slack, cask: true }
+          - { name: spotify, cask: true }
+          - { name: postman, cask: true }
 
       homebrew_fonts:
           - { name: font-fontawesome }
@@ -34,21 +35,19 @@
             path: '{{ brew_exe_path }}'
             update_homebrew: yes
 
-      - name: Install homebrew packages
+      - name: Install homebrew packages as casks
+        community.general.homebrew_cask:
+            path: '{{ brew_exe_path }}'
+            name: '{{ item.name }}'
+            state: "{{ item.state | default('installed') }}"
+        loop: "{{ homebrew_packages | selectattr('cask', 'defined') | selectattr('cask', 'equalto', true) | list }}"
+
+      - name: Install homebrew packages as formulas
         community.general.homebrew:
             path: '{{ brew_exe_path }}'
             name: '{{ item.name }}'
             state: "{{ item.state | default('present') }}"
-        ignore_errors: true
-        with_items: '{{ homebrew_packages }}'
-        register: ret_homebrew
-
-      - name: Check updated homebrew package
-        set_fact: updated_homebrew_package={{ ret_homebrew.results | selectattr('changed') | map(attribute='item.name') | list }}
-
-      - name: Debug Updated Packages
-        debug:
-            msg: 'Updated packages: {{ updated_homebrew_package }}'
+        loop: "{{ homebrew_packages | rejectattr('cask', 'defined') | list }}"
 
       - name: Install Fonts
         community.general.homebrew_cask:
@@ -57,10 +56,19 @@
             state: "{{ item.state | default('installed') }}"
         with_items: '{{ homebrew_fonts }}'
 
+      - name: Update PowerLevel10K themes
+        ansible.builtin.git:
+          repo: https://github.com/alacritty/alacritty-theme
+          dest: "~/.config/alacritty/themes"
+          force: yes
+
       - name: Change shell to zsh
         ansible.builtin.user:
             name: '{{ current_user }}'
             shell: /bin/zsh
 
-      - name: Load ~/.zshrc
-        shell: source ~/.zshrc
+      - name: Load ~/.zshrc and ~/.zprofile
+        shell: |
+          source ~/.zshrc && source ~/.zprofile
+        args:
+          executable: /bin/zsh
