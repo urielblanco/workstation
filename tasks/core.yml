@@ -5,13 +5,15 @@
       brew_exe_path: "{% if ansible_facts['architecture'] == 'arm64' %}/opt/homebrew/bin{% else %}/usr/local/bin{% endif %}"
 
       homebrew_packages:
-          - { name: helix }
           - { name: bash }
           - { name: nvm }
           - { name: zellij }
           - { name: zsh }
-          - { name: zsh-autosuggestions }
-          - { name: powerlevel10k }
+          - { name: zoxide }
+          - { name: fzf }
+          - { name: helix }
+          - { name: koekeishiya/formulae/yabai }
+          - { name: koekeishiya/formulae/skhd }
           - { name: alacritty, cask: true }
           - { name: anaconda, cask: true }
           - { name: cocoapods, cask: true }
