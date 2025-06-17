@@ -7,14 +7,8 @@
       homebrew_packages:
           - { name: bash }
           - { name: nvm }
-          - { name: zellij }
           - { name: zsh }
-          - { name: zoxide }
-          - { name: fzf }
           - { name: helix }
-          - { name: koekeishiya/formulae/yabai }
-          - { name: koekeishiya/formulae/skhd }
-          - { name: alacritty, cask: true }
           - { name: anaconda, cask: true }
           - { name: cocoapods, cask: true }
           - { name: android-studio, cask: true }
@@ -23,6 +17,8 @@
           - { name: slack, cask: true }
           - { name: spotify, cask: true }
           - { name: postman, cask: true }
+          - { name: obsidian, cask: true }
+          - { name: wezterm, cask: true }
 
       homebrew_fonts:
           - { name: font-fontawesome }
@@ -57,12 +53,6 @@
             name: '{{ item.name }}'
             state: "{{ item.state | default('installed') }}"
         with_items: '{{ homebrew_fonts }}'
-
-      - name: Update PowerLevel10K themes
-        ansible.builtin.git:
-          repo: https://github.com/alacritty/alacritty-theme
-          dest: "~/.config/alacritty/themes"
-          force: yes
 
       - name: Change shell to zsh
         ansible.builtin.user:
